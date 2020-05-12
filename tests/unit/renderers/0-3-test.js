@@ -1,6 +1,8 @@
 /* global QUnit */
 import Renderer from 'mobiledoc-markdown-renderer';
 import ImageCard from 'mobiledoc-markdown-renderer/cards/image';
+import CodeCard from 'mobiledoc-markdown-renderer/cards/code';
+import HtmlCard from 'mobiledoc-markdown-renderer/cards/html';
 import {
   MARKUP_SECTION_TYPE,
   LIST_SECTION_TYPE,
@@ -16,6 +18,8 @@ import {
 const { test, module } = QUnit;
 const MOBILEDOC_VERSION = '0.3.0';
 const dataUri = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=";
+const codeCardContents = "npx create-react-app my-app\n\ncd my-app\n\nyarn start\n";
+const htmlCardContents = "<center>\n\t<h1>Hello World</h1>\n</center>";
 
 let renderer;
 module('Unit: Mobiledoc Markdown Renderer - 0.3', {
@@ -144,6 +148,55 @@ test('renders a mobiledoc with built-in image card', (assert) => {
   let { result: rendered } = renderer.render(mobiledoc);
 
   assert.equal(rendered, `![](${dataUri})`);
+});
+
+test('renders a mobiledoc with built-in code card', (assert) => {
+  assert.expect(1);
+  let cardName = CodeCard.name;
+  let payload = {
+    language: 'sh',
+    code: codeCardContents
+  };
+  let mobiledoc = {
+    version: MOBILEDOC_VERSION,
+    atoms: [],
+    cards: [
+      [cardName, payload]
+    ],
+    markups: [],
+    sections: [
+      [CARD_SECTION_TYPE, 0]
+    ]
+  };
+  let {
+    result: rendered
+  } = renderer.render(mobiledoc);
+
+  assert.equal(rendered, '```sh\n'+codeCardContents+'\n```');
+});
+
+test('renders a mobiledoc with built-in html card', (assert) => {
+  assert.expect(1);
+  let cardName = HtmlCard.name;
+  let payload = {
+    html: htmlCardContents
+  };
+  let mobiledoc = {
+    version: MOBILEDOC_VERSION,
+    atoms: [],
+    cards: [
+      [cardName, payload]
+    ],
+    markups: [],
+    sections: [
+      [CARD_SECTION_TYPE, 0]
+    ]
+  };
+  let {
+    result: rendered
+  } = renderer.render(mobiledoc);
+
+  assert.equal(rendered, htmlCardContents);
 });
 
 test('render mobiledoc with list section and list items', (assert) => {
