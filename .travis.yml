@@ -1,7 +1,7 @@
 ---
 language: node_js
 node_js:
-  - "0.12"
+  - "12"
 
 sudo: false
 
@@ -11,11 +11,8 @@ cache:
 
 before_install:
   - export PATH=/usr/local/phantomjs-2.0.0/bin:$PATH
-  - "npm config set spin false"
-  - "npm install -g npm@^2"
 
 install:
-  - npm install -g broccoli-cli
   - npm install
 
 script:

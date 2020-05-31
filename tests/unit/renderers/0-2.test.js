@@ -1,7 +1,5 @@
 import Renderer from "../../../lib";
 import ImageCard from "../../../lib/cards/image";
-import CodeCard from "../../../lib/cards/code";
-import HtmlCard from "../../../lib/cards/html";
 import {
   MARKUP_SECTION_TYPE,
   LIST_SECTION_TYPE,
