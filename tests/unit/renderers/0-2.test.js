@@ -1,5 +1,8 @@
 import Renderer from "../../../lib";
 import ImageCard from "../../../lib/cards/image";
+import CodeCard from "../../../lib/cards/code";
+import HtmlCard from "../../../lib/cards/html";
+
 import {
   MARKUP_SECTION_TYPE,
   LIST_SECTION_TYPE,
@@ -10,6 +13,9 @@ import {
 const MOBILEDOC_VERSION = "0.2.0";
 const dataUri =
   "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=";
+const codeCardContents =
+  "npx create-react-app my-app\n\ncd my-app\n\nyarn start\n";
+const htmlCardContents = "<center>\n\t<h1>Hello World</h1>\n</center>";
 
 let renderer;
 describe("Unit: Mobiledoc Markdown Renderer - 0.2", () => {
@@ -140,6 +146,47 @@ describe("Unit: Mobiledoc Markdown Renderer - 0.2", () => {
     let { result: rendered } = renderer.render(mobiledoc);
 
     expect(rendered).toBe(`![](${dataUri})`);
+  });
+
+  it("renders a mobiledoc with built-in code card", () => {
+    let cardName = CodeCard.name;
+    let payload = {
+      language: "sh",
+      code: codeCardContents,
+    };
+    let mobiledoc = {
+      version: MOBILEDOC_VERSION,
+      sections: [
+        [], // markers
+        [
+          // sections
+          [CARD_SECTION_TYPE, cardName, payload],
+        ],
+      ],
+    };
+    let { result: rendered } = renderer.render(mobiledoc);
+
+    expect(rendered).toBe("```sh\n" + codeCardContents + "\n```");
+  });
+
+  it("renders a mobiledoc with built-in html card", () => {
+    let cardName = HtmlCard.name;
+    let payload = {
+      html: htmlCardContents,
+    };
+    let mobiledoc = {
+      version: MOBILEDOC_VERSION,
+      sections: [
+        [], // markers
+        [
+          // sections
+          [CARD_SECTION_TYPE, cardName, payload],
+        ],
+      ],
+    };
+    let { result: rendered } = renderer.render(mobiledoc);
+
+    expect(rendered).toBe(htmlCardContents);
   });
 
   it("render mobiledoc with list section and list items", () => {
